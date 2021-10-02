@@ -24,21 +24,7 @@ const authToken = process.env.authToken;
 const client = require('twilio')(accountSid, authToken);
 
 const sampleUserAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36'
-// To be initialised with Google sheets data
 
-
-
-
-
-
-
-let transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: 'mumbai.vaccine.alerts@gmail.com',
-    pass: process.env.emailPassowrd,
-  }
-});
 
 // Data from Google sheet is stored as excel
 var sheetData = [];
@@ -127,17 +113,16 @@ async function pingCowin() {
           }
         }
 
-        
-        if (smsBody != '' && !rateLimited[row['Phone Number for SMS Updates (10 digits Eg-9876543210)']]) {
-          // Get phone number from row in sheet data
+        // Don't send Sms body is null hence no slots available
+        if (smsBody != '' ){
           let phone = row['Phone Number for SMS Updates (10 digits Eg-9876543210)'];
           //Trim to single sms length
           if (smsBody.length > 160) {
             smsBody = smsBody.substring(0, 140) + '\nMany more....'
           }
           let currentTime = Date.now();                              
-          
-          if (rateLimited[phone] == undefined || currentTime - rateLimited[phone] > 1000 * 10 * 60) {
+          // If sms was sent to phone number in last 30 minutes dont send again
+          if (rateLimited[phone] == undefined || currentTime - rateLimited[phone] > 1000 * 30 * 60) {
             //Send sms via twilio
             await client.messages.create({
               to: `+91${phone}`,
