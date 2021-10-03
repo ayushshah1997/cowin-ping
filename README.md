@@ -14,3 +14,6 @@ Asked friends and family to fill out a google form with vaccine and location pre
 The script pings cowin API ever 15 seconds and send sms update if slots are available as per location and vaccine preference. 
 Sms body contains vaccine center and number of doses available. Added rate limiter functionaity which ensures only 1 sms is sent every 30 minutes to preven spamming.
 
+Sample screenshot of sms sent
+
+<img alt="SMS Screenshot" src="/smsScreenshot.jpeg">
